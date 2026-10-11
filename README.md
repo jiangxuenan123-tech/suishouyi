@@ -17,6 +17,8 @@
 
 ## 安装
 
+GitHub 私有仓库：[suishouyi](https://github.com/jiangxuenan123-tech/suishouyi)。现有 Mac 与 Windows 安装包在 [Releases](https://github.com/jiangxuenan123-tech/suishouyi/releases) 下载；源码中的 `Dist/` 保留校验清单和界面预览。本机签名私钥、含旧密码的备份和重复构建目录不上传。
+
 Mac 需要 macOS 26 或更新版本；支持 Apple Silicon 与 Intel。安装包在 `Dist/`。Windows 候选版面向 Windows 10 2004 或更新版本的 x64 电脑，安装包也在 `Dist/`。
 
 应用自动准备 CodeBuddy。Windows 包含 .NET 运行依赖与中英文 OCR。每位使用者完成自己的官方 CodeBuddy 登录；Mac 屏幕录制、辅助功能，以及系统要求的安装确认由本人完成。无需输入命令或安装开发工具。
