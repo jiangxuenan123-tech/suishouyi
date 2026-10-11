@@ -1,0 +1,8 @@
+#!/bin/bash
+# 安装结束后以当前桌面用户启动，禁止以 root 启动。
+set -e
+console_user=$(/usr/bin/stat -f '%Su' /dev/console)
+case "$console_user" in root|loginwindow|_mbsetupuser) exit 0 ;; esac
+console_uid=$(/usr/bin/id -u "$console_user")
+/bin/launchctl asuser "$console_uid" /usr/bin/sudo -u "$console_user" /usr/bin/open '/Applications/随手译.app' || true
+exit 0

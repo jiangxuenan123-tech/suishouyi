@@ -1,0 +1,21 @@
+# 本机签名和旧备份，可能含私钥或旧密码
+/signing/
+/Backups/
+*.p12
+*.keychain-db
+.env
+.env.*
+
+# 可重新生成的构建与检查文件
+/Build/
+/Windows/Build/
+/Windows/Installer/payload.zip
+/.checks/
+/.build-stage.*/
+bin/
+obj/
+.DS_Store
+
+# 安装包作为同一私有仓库的 Release 附件上传
+/Dist/*.exe
+/Dist/*.pkg

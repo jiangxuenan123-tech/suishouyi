@@ -1,0 +1,38 @@
+{
+  "applicationVersion": "1.1.0",
+  "codebuddy": {
+    "distribution": "native binary (official beta)",
+    "installer": "https://www.codebuddy.cn/cli/install.sh",
+    "repository": "https://acc-1258344699.cos.accelerate.myqcloud.com/@tencent-ai/codebuddy-code/releases",
+    "versionPolicy": "verify --help flags once in setup; reuse compatible executable; otherwise install managed official latest",
+    "versionObserved": "2.164.0",
+    "archiveTemplate": "download/{version}/codebuddy-code_Darwin_{arm64|x86_64}.tar.gz",
+    "checksumsTemplate": "download/{version}/checksums.txt",
+    "verification": "require SHA256 equal to official checksums.txt before extract and execute",
+    "observedSha256": {
+      "Darwin_arm64": "ada40be6abbdbad7aec6d3a1dc4ce968b1e98e702bf9de48e857b6cb996f956d",
+      "Darwin_x86_64": "a815e7fbc6651701b282fd54036b38b0ab215c811f0c6bd5302dfab9e05d6091"
+    },
+    "installDirectory": "~/Library/Application Support/随手译/CodeBuddy",
+    "login": "official interactive /login opened in Terminal via .command",
+    "credentials": "managed by official CLI only; never copied into app or package",
+    "nodeRequired": false,
+    "requiredFlags": [
+      "--print",
+      "--output-format",
+      "--tools",
+      "--strict-mcp-config",
+      "--no-session-persistence",
+      "--model"
+    ],
+    "replacementPolicy": "never overwrite global CLI; replace only managed binary with retained unique backup"
+  },
+  "macOS": {
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "minimumVersion": "26.0"
+  },
+  "checkedOn": "2026-10-11"
+}

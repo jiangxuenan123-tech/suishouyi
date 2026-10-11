@@ -1,0 +1,41 @@
+{
+  "dotnetSDK": "10.0.401",
+  "tesseractNuget": "5.2.0",
+  "tessdataVersion": "4.1.0",
+  "tessdataCommit": "65727574dfcd264acbb0c3e07860e4e9e9b22185",
+  "codebuddyVersion": "2.164.0",
+  "codebuddyArchiveSHA256": "bdd13127c60eb5f02cdaabd10cc5a0b44b2f3f8c2b790036895fe61d3d31bd93",
+  "resources": [
+    {
+      "name": "eng.traineddata",
+      "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/eng.traineddata"
+    },
+    {
+      "name": "chi_sim.traineddata",
+      "sha256": "a5fcb6f0db1e1d6d8522f39db4e848f05984669172e584e8d76b6b3141e1f730",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/chi_sim.traineddata"
+    },
+    {
+      "name": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/LICENSE"
+    },
+    {
+      "name": "vc_redist.x64.exe",
+      "sha256": "cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b",
+      "url": "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+    }
+  ],
+  "tesseractPackageSHA256": "202d82fc7c7d8384df7da57206d5e1f456ccdabd648c46e67cdfaa3a911d4795",
+  "nativeOcrDLLs": [
+    {
+      "name": "x64/tesseract50.dll",
+      "sha256": "de4d04ec75095374d98f5dd7a60d14d7e2e0f76589db693eccf7ae658be8cb2b"
+    },
+    {
+      "name": "x64/leptonica-1.82.0.dll",
+      "sha256": "dfcb3e6ed0b16bc55bfdbcf53543cfe42a354b87c3e35bd3a95eebf005d73e76"
+    }
+  ]
+}
