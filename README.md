@@ -17,7 +17,7 @@
 
 ## 安装
 
-GitHub 私有仓库：[suishouyi](https://github.com/jiangxuenan123-tech/suishouyi)。现有 Mac 与 Windows 安装包在 [Releases](https://github.com/jiangxuenan123-tech/suishouyi/releases) 下载；源码中的 `Dist/` 保留校验清单和界面预览。本机签名私钥、含旧密码的备份和重复构建目录不上传。
+GitHub 公开仓库：[suishouyi](https://github.com/jiangxuenan123-tech/suishouyi)。现有 Mac 与 Windows 安装包在 [Releases](https://github.com/jiangxuenan123-tech/suishouyi/releases) 下载；源码中的 `Dist/` 保留校验清单和界面预览。本机签名私钥、含旧密码的备份和重复构建目录不上传。
 
 Mac 需要 macOS 26 或更新版本；支持 Apple Silicon 与 Intel。安装包在 `Dist/`。Windows 候选版面向 Windows 10 2004 或更新版本的 x64 电脑，安装包也在 `Dist/`。
 
