@@ -1,0 +1,2 @@
+随手译 1.2.0 macOS universal
+测试包；未获得 Developer ID 签名和 Apple 公证，跨机器安装未验证。

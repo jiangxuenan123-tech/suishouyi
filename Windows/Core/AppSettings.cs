@@ -1,6 +1,7 @@
 namespace Suishouyi.Core;
 public sealed class AppSettings {
  public string SelectedModelId {get;set;}="hy3";
+ public bool ParallelGeneration {get;set;}=true;
  public bool SetupCompleted {get;set;}
  public string ThemeId {get;set;}="refinedLight";
  public int TranslationKey {get;set;}=119;

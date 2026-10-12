@@ -8,6 +8,10 @@ final class AppSettings {
     private let defaults: UserDefaults
     var changed: (() -> Void)?
     init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+    var parallelGeneration: Bool {
+        get { defaults.object(forKey: "parallelGeneration") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "parallelGeneration"); changed?() }
+    }
     var modelId: String {
         get { defaults.string(forKey: "selectedModelId") ?? "hy3" }
         set { defaults.set(newValue, forKey: "selectedModelId"); changed?() }

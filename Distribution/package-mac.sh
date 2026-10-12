@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP="$ROOT/Build/随手译.app"
 OUT="$ROOT/Dist"
-VERSION=1.1.0
+VERSION=1.2.0
 [[ -d "$APP" ]] || { echo '缺少 Build/随手译.app，请先运行 build.sh。' >&2; exit 1; }
 /usr/bin/lipo -verify_arch arm64 "$APP/Contents/MacOS/TransLite"
 /usr/bin/lipo -verify_arch x86_64 "$APP/Contents/MacOS/TransLite"
@@ -49,16 +49,16 @@ stage, label = sys.argv[1:]
 p = Path(stage)
 title = '测试安装包' if label == 'TEST-UNSIGNED' else 'Developer ID 已签名'
 warning = '此包未经 Developer ID 签名或 Apple 公证，仅供受控测试。macOS 可能阻止打开。' if label == 'TEST-UNSIGNED' else '使用 Developer ID 签名；是否通过 Apple 公证请查看安装包旁的状态文件。'
-(p/'resources/welcome.html').write_text('<html><meta charset="utf-8"><body><h2>随手译 1.1.0</h2><p>' + warning + '</p><p>安装到 /Applications/随手译.app。安装后自动启动，自动准备官方 CodeBuddy 组件。首次登录、辅助功能和屏幕录制权限需要本人确认。</p></body></html>')
+(p/'resources/welcome.html').write_text('<html><meta charset="utf-8"><body><h2>随手译 1.2.0</h2><p>' + warning + '</p><p>安装到 /Applications/随手译.app。安装后自动启动，自动准备官方 CodeBuddy 组件。首次登录、辅助功能和屏幕录制权限需要本人确认。</p></body></html>')
 (p/'distribution.xml').write_text('''<?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
-  <title>随手译 1.1.0 · ''' + title + '''</title>
+  <title>随手译 1.2.0 · ''' + title + '''</title>
   <welcome file="welcome.html" mime-type="text/html"/>
   <options customize="never" require-scripts="false" hostArchitectures="arm64,x86_64"/>
   <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
   <choices-outline><line choice="default"/></choices-outline>
   <choice id="default" title="随手译" visible="false"><pkg-ref id="com.suishouyi.mac"/></choice>
-  <pkg-ref id="com.suishouyi.mac" version="1.1.0" onConclusion="none">component.pkg</pkg-ref>
+  <pkg-ref id="com.suishouyi.mac" version="1.2.0" onConclusion="none">component.pkg</pkg-ref>
 </installer-gui-script>
 ''')
 PYDOC

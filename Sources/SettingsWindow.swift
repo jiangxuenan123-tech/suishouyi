@@ -31,6 +31,7 @@ final class ShortcutRecorder: NSButton {
     private var window: NSWindow?
     private let model = NSPopUpButton()
     private let theme = NSPopUpButton()
+    private let parallel = NSButton(checkboxWithTitle: "同时生成翻译和解释（增加模型用量）", target: nil, action: nil)
     private let status = NSTextField(wrappingLabelWithString: "模型能否使用以当前账号权限和额度为准。")
     var onShortcut: ((TaskMode, UInt32, UInt32) -> Bool)?
     var onSetup: (() -> Void)?
@@ -47,8 +48,10 @@ final class ShortcutRecorder: NSButton {
         if !ids.contains(settings.modelId) { ids.insert(settings.modelId, at: 0) }
         model.addItems(withTitles: ids); model.selectItem(withTitle: settings.modelId)
         theme.selectItem(at: settings.theme == .refinedLight ? 0 : 1)
+        parallel.state = settings.parallelGeneration ? .on : .off
     }
     @objc private func changeModel() { if let id = model.titleOfSelectedItem { settings.modelId = id } }
+    @objc private func changeParallel() { settings.parallelGeneration = parallel.state == .on }
     @objc private func changeTheme() { settings.theme = theme.indexOfSelectedItem == 0 ? .refinedLight : .techDark }
     @objc func refreshModels() {
         status.stringValue = "正在读取 CodeBuddy 支持的模型…"
@@ -66,7 +69,7 @@ final class ShortcutRecorder: NSButton {
     @objc private func restoreModel() { settings.modelId = "hy3" }
     @objc private func setup() { onSetup?() }
     private func makeWindow() {
-        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 540, height: 410), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 540, height: 540), styleMask: [.titled, .closable], backing: .buffered, defer: false)
         self.window = window; window.title = "随手译 · 设置"; window.isReleasedWhenClosed = false
         let stack = NSStackView(); stack.orientation = .vertical; stack.alignment = .leading; stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -78,6 +81,7 @@ final class ShortcutRecorder: NSButton {
             let row = NSStackView(views: [NSTextField(labelWithString: label), control]); row.spacing = 20; stack.addArrangedSubview(row)
             control.widthAnchor.constraint(equalToConstant: 280).isActive = true
         }
+        parallel.target = self; parallel.action = #selector(changeParallel); stack.addArrangedSubview(parallel)
         let refresh = NSButton(title: "刷新模型列表", target: self, action: #selector(refreshModels))
         let restore = NSButton(title: "恢复 HY3", target: self, action: #selector(restoreModel))
         stack.addArrangedSubview(NSStackView(views: [refresh, restore])); stack.addArrangedSubview(status)
@@ -89,6 +93,6 @@ final class ShortcutRecorder: NSButton {
             stack.addArrangedSubview(NSStackView(views: [label, recorder]))
         }
         stack.addArrangedSubview(NSButton(title: "登录、组件与权限设置", target: self, action: #selector(setup)))
-        stack.addArrangedSubview(NSTextField(wrappingLabelWithString: "截图识字在本机完成，选中文字会发送给当前 AI 模型。模型切换用于下次请求；当前结果不会自动重发。"))
+        stack.addArrangedSubview(NSTextField(wrappingLabelWithString: "截图识字在本机完成，选中文字会发送给当前 AI 模型。模型切换用于下次请求；同时生成开关用于下次选取，当前结果不会自动重发。"))
     }
 }

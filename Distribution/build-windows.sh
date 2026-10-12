@@ -29,5 +29,5 @@ print('Windows self-contained payload and OCR hashes verified')
 PYCODE
 "$DOTNET" publish "$ROOT/Windows/Installer" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:NuGetAudit=false -o "$ROOT/Windows/Build/setup"
 mkdir -p "$ROOT/Dist"
-cp "$ROOT/Windows/Build/setup/Setup.exe" "$ROOT/Dist/Suishouyi-1.1.0-windows-x64-Setup.exe"
-shasum -a 256 "$ROOT/Dist/Suishouyi-1.1.0-windows-x64-Setup.exe"
+cp "$ROOT/Windows/Build/setup/Setup.exe" "$ROOT/Dist/Suishouyi-1.2.0-windows-x64-Setup.exe"
+shasum -a 256 "$ROOT/Dist/Suishouyi-1.2.0-windows-x64-Setup.exe"

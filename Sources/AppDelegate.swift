@@ -9,6 +9,12 @@ import ApplicationServices
     private let setup = SetupCoordinator()
     private let settings = AppSettings.shared
     private var activeTask: Task<Void, Never>?
+    private var generations: [String: Task<Void, Never>] = [:]
+    private var failures: [String: Error] = [:]
+    private var requestModels: [String: String] = [:]
+    private var revision = 0
+    private var displayedResult = false
+    private var selectedMode = false
     private var currentMode: TaskMode = .translation
     private var original = ""
     private var results: [String: AIResult] = [:]
@@ -25,8 +31,8 @@ import ApplicationServices
             Task { @MainActor [weak self] in self?.sourceApp = app }
         }
         panel.onMode = { [weak self] mode in self?.switchMode(mode) }
-        panel.onClose = { [weak self] in self?.activeTask?.cancel() }
-        panel.onCancel = { [weak self] in self?.activeTask?.cancel(); self?.panel.hidePanel() }
+        panel.onClose = { [weak self] in self?.cancelGeneration() }
+        panel.onCancel = { [weak self] in self?.cancelGeneration(); self?.panel.hidePanel() }
         settingsWindow.onSetup = { [weak self] in self?.setup.show() }
         settingsWindow.onShortcut = { [weak self] mode, key, modifiers in self?.changeShortcut(mode, key: key, modifiers: modifiers) ?? false }
         settings.changed = { [weak self] in self?.panel.updateSettings(); self?.settingsWindow.update(); self?.updateMenu() }
@@ -83,74 +89,108 @@ import ApplicationServices
     @objc private func refreshModels() { settingsWindow.refreshModels() }
     @objc private func restoreModel() { settings.modelId = "hy3" }
     @objc private func selectModel(_ sender: NSMenuItem) { if let id = sender.representedObject as? String { settings.modelId = id } }
-    @objc private func quit() { activeTask?.cancel(); NSApp.terminate(nil) }
+    @objc private func quit() { cancelGeneration(); NSApp.terminate(nil) }
+    private func cancelGeneration() {
+        revision += 1
+        activeTask?.cancel(); activeTask = nil
+        for task in generations.values { task.cancel() }
+        generations.removeAll()
+    }
     private func switchMode(_ mode: TaskMode) {
         guard activeTask == nil else { panel.setMode(currentMode); panel.showBusy(); return }
-        currentMode = mode
+        selectedMode = true; currentMode = mode
         if let result = results[mode.rawValue] { panel.showResult(result) }
+        else if generations[mode.rawValue] != nil { panel.showLoading(original: original, mode: mode, modelId: requestModels[mode.rawValue]) }
+        else if let error = failures[mode.rawValue] { showFailure(error, mode: mode) }
         else { start(mode, reuse: !original.isEmpty) }
     }
     private func start(_ mode: TaskMode, reuse: Bool = false) {
         guard activeTask == nil else { panel.showBusy(); return }
-        currentMode = mode
-        let modelId = settings.modelId
+        if reuse && !original.isEmpty {
+            currentMode = mode
+            if let result = results[mode.rawValue] { panel.showResult(result); return }
+            if generations[mode.rawValue] != nil { panel.showLoading(original: original, mode: mode, modelId: requestModels[mode.rawValue]); return }
+            generate(mode, modelId: settings.modelId, revision: revision)
+            return
+        }
+        if !generations.isEmpty && !displayedResult { panel.showBusy(); return }
+        cancelGeneration()
+        let version = revision, modelId = settings.modelId, both = settings.parallelGeneration
         let app = sourceApp
-        if !reuse { original = ""; results.removeAll() }
+        currentMode = mode; original = ""; results.removeAll(); failures.removeAll(); requestModels.removeAll()
+        displayedResult = false; selectedMode = false
         activeTask = Task { [self] in
-            defer { activeTask = nil }
+            defer { if revision == version { activeTask = nil } }
             do {
-                if !reuse {
-                    panel.showLoading(original: "", mode: mode, message: "正在获取选中文字…", modelId: modelId)
-                    if let selected = await SelectionReader.readSelectedText(from: app) {
-                        original = selected
-                    } else {
-                        try Task.checkCancellation()
-                        panel.hidePanel()
-                        guard let image = try await ScreenOCR.captureInteractiveSelection() else { return }
-                        panel.showLoading(original: "", mode: mode, message: "正在识别截图中的文字…", modelId: modelId)
-                        original = try await ScreenOCR.recognizeText(in: image)
-                    }
+                panel.showLoading(original: "", mode: mode, message: "正在获取选中文字…", modelId: modelId)
+                if let selected = await SelectionReader.readSelectedText(from: app) {
+                    try Task.checkCancellation(); original = selected
+                } else {
+                    try Task.checkCancellation(); panel.hidePanel()
+                    guard let image = try await ScreenOCR.captureInteractiveSelection() else { return }
+                    try Task.checkCancellation()
+                    panel.showLoading(original: "", mode: mode, message: "正在识别截图中的文字…", modelId: modelId)
+                    let text = try await ScreenOCR.recognizeText(in: image)
+                    try Task.checkCancellation(); original = text
                 }
-                try Task.checkCancellation()
                 guard !original.trimmed.isEmpty else { throw InputError.noText }
-                let input = original
-                panel.showLoading(original: input, mode: mode, modelId: modelId)
-                let slow = Task { try? await Task.sleep(nanoseconds: 8_000_000_000); if !Task.isCancelled { panel.showSlow() } }
-                defer { slow.cancel() }
-                let result = try await Translator.shared.process(input, mode: mode, modelId: modelId)
+                generate(mode, modelId: modelId, revision: version)
+                if both { generate(mode == .translation ? .explanation : .translation, modelId: modelId, revision: version) }
+            } catch is CancellationError { if revision == version { panel.hidePanel() } }
+            catch { if revision == version { showFailure(error, mode: mode) } }
+        }
+    }
+    private func generate(_ mode: TaskMode, modelId: String, revision version: Int) {
+        guard generations[mode.rawValue] == nil else { return }
+        let text = original
+        failures.removeValue(forKey: mode.rawValue); requestModels[mode.rawValue] = modelId
+        if mode == currentMode { panel.showLoading(original: text, mode: mode, modelId: modelId) }
+        generations[mode.rawValue] = Task { [self] in
+            let slow = Task { try? await Task.sleep(nanoseconds: 8_000_000_000); if !Task.isCancelled && revision == version && currentMode == mode { panel.showSlow() } }
+            defer { slow.cancel(); if revision == version { generations.removeValue(forKey: mode.rawValue) } }
+            do {
+                let result = try await Translator.shared.process(text, mode: mode, modelId: modelId)
                 try Task.checkCancellation()
+                guard revision == version else { return }
                 results[mode.rawValue] = result
-                panel.showResult(result)
-            } catch is CancellationError { panel.hidePanel() }
+                if mode == currentMode || (!displayedResult && !selectedMode) {
+                    currentMode = mode; displayedResult = true; panel.showResult(result)
+                }
+            } catch is CancellationError { }
             catch {
-                if Task.isCancelled { panel.hidePanel(); return }
-                var title = "重试"
-                let retry: @MainActor () -> Void = { [weak self] in guard let self else { return }; self.start(mode, reuse: !self.original.isEmpty) }
-                var action = retry
-                func recover(_ message: String, operation: @escaping @MainActor () -> Void) -> @MainActor () -> Void {
-                    { [weak self] in
-                        operation()
-                        self?.panel.onAction = retry
-                        self?.panel.showError(message, original: self?.original ?? "", actionTitle: "重试")
-                    }
-                }
-                if let error = error as? AIError {
-                    switch error {
-                    case .missingCLI: title = "自动准备组件"; action = recover("准备组件完成后，点击重试继续处理原文。") { [weak self] in self?.setup.show() }
-                    case .loginRequired: title = "重新登录"; action = recover("完成登录后，点击重试继续处理原文。") { [weak self] in self?.setup.login() }
-                    case .modelUnavailable: title = "切换模型"; action = recover("选择其他模型后，点击重试继续处理原文。") { [weak self] in self?.settingsWindow.show() }
-                    default: break
-                    }
-                }
-                if let input = error as? InputError {
-                    switch input {
-                    case .screenPermission: title = "前往权限设置"; action = { [weak self] in self?.setup.show() }
-                    default: title = "重新框选"; action = { [weak self] in self?.start(mode) }
-                    }
-                }
-                panel.onAction = action
-                panel.showError(error.localizedDescription, original: original, actionTitle: title)
+                guard revision == version && !Task.isCancelled else { return }
+                failures[mode.rawValue] = error
+                if mode == currentMode { showFailure(error, mode: mode) }
             }
         }
+    }
+    private func showFailure(_ error: Error, mode: TaskMode) {
+        panel.setMode(mode)
+        var title = "重试"
+        let retry: @MainActor () -> Void = { [weak self] in guard let self else { return }; self.start(mode, reuse: !self.original.isEmpty) }
+        var action = retry
+        func recover(_ message: String, operation: @escaping @MainActor () -> Void) -> @MainActor () -> Void {
+            { [weak self] in
+                operation()
+                self?.panel.onAction = retry
+                self?.panel.showError(message, original: self?.original ?? "", actionTitle: "重试")
+            }
+        }
+        if let error = error as? AIError {
+            switch error {
+            case .missingCLI: title = "自动准备组件"; action = recover("准备组件完成后，点击重试继续处理原文。") { [weak self] in self?.setup.show() }
+            case .loginRequired: title = "重新登录"; action = recover("完成登录后，点击重试继续处理原文。") { [weak self] in self?.setup.login() }
+            case .modelUnavailable: title = "切换模型"; action = recover("选择其他模型后，点击重试继续处理原文。") { [weak self] in self?.settingsWindow.show() }
+            default: break
+            }
+        }
+        if let input = error as? InputError {
+            switch input {
+            case .screenPermission: title = "前往权限设置"; action = { [weak self] in self?.setup.show() }
+            default: title = "重新框选"; action = { [weak self] in self?.start(mode) }
+            }
+        }
+        panel.onAction = action
+        panel.showError(error.localizedDescription, original: original, actionTitle: title)
     }
 }

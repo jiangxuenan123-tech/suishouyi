@@ -1,29 +1,29 @@
 {
-  "generatedOn": "2026-10-11",
+  "generatedOn": "2026-10-12",
   "application": "随手译",
   "packages": [
     {
-      "file": "Suishouyi-1.1.0-windows-x64-Setup.exe",
-      "version": "1.1.0",
+      "file": "Suishouyi-1.2.0-windows-x64-Setup.exe",
+      "version": "1.2.0",
       "platform": "Windows",
       "architecture": "x64",
       "minimumOS": "Windows 10 2004",
-      "bytes": 224571777,
-      "sha256": "145f54493b38df7cf54bb7fbe6ae8a814f28712fce70c58f38b2bafe015ffb8d",
+      "bytes": 224576385,
+      "sha256": "69e4d2221516d7fc2d75ae177c1d87a8a29dc5528f26fe019bef8ec4c7efb609",
       "signing": "unsigned",
-      "runtimeVerification": "pending Windows device",
+      "runtimeVerification": "Windows x64 cross build and self-contained publish verified; Windows device runtime verification pending",
       "releaseStatus": "test candidate"
     },
     {
-      "file": "随手译-1.1.0-macOS-universal-TEST-UNSIGNED.pkg",
-      "version": "1.1.0",
+      "file": "随手译-1.2.0-macOS-universal-TEST-UNSIGNED.pkg",
+      "version": "1.2.0",
       "platform": "macOS",
       "architecture": "arm64+x86_64",
       "minimumOS": "macOS 26.0",
-      "bytes": 492173,
-      "sha256": "21eabe874095adab9b1444a02cc44a1e962204dbe3d7f7f43a16f44fa21826e3",
+      "bytes": 496476,
+      "sha256": "adc6b619a621650e1d75c0606ddc5822a60f19614f64822c45c7ee3c6e4e43af",
       "signing": "unsigned installer; stable original local certificate App",
-      "runtimeVerification": "stable original signing, universal build, unchanged-result regression checks and eight live HY3 word/context/code samples verified; user confirmed screen capture works",
+      "runtimeVerification": "arm64+x86_64 build and stable original certificate signing verified; concurrent generation UI runtime verification pending",
       "releaseStatus": "test candidate"
     }
   ]
