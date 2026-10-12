@@ -1,7 +1,7 @@
 # Windows 待办 · 2026-10-12
 
-状态：仅记录；用户要求稍后修改。
+状态：安装与登录改动待处理；乱码修复已获批准。
 
 - 安装与首次使用窗口：扩大尺寸，适配 DPI；文字、按钮完整显示。
 - 本人官方登录：自动选择中国站，进入绑定 CLI 会话的官方扫码授权页；用户本人扫码确认；完成后自动验证连接。直达二维码可行性待实机确认。
-- Tencent 译文乱码：原文面板显示 Tencent，译文包含替换字符及正常“腾讯”。ProcessRunner 指定输出/错误 UTF-8，未指定 StandardInputEncoding；疑似中文请求前缀按 Windows 默认编码写入，CLI 按 UTF-8 解读。待修复输入编码并在原 Windows 电脑复查；不直接删除乱码冒充修复。
+- Tencent 译文乱码：原文面板显示 Tencent，译文包含替换字符及正常“腾讯”。ProcessRunner 指定输出/错误 UTF-8，未指定 StandardInputEncoding；疑似中文请求前缀按 Windows 默认编码写入，CLI 按 UTF-8 解读。1.2.2 已明确使用无 BOM 的 UTF-8 发送文字，并要求模型容忍边缘标点；待原 Windows 电脑复查。

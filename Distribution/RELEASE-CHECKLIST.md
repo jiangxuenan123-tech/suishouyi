@@ -38,3 +38,10 @@
 - 待实机确认：两种皮肤、窗口缩放、125%／150%／200% 显示缩放，以及模型、生成开关和快捷键操作。
 - 本次只修改设置界面；首次使用窗口、官方扫码登录自动化和 Tencent 乱码仍见 `Windows/PENDING-FIXES.md`。
 - 安装包：`Dist/Suishouyi-1.2.1-windows-x64-Setup.exe`。
+
+## Windows 1.2.2 请求编码与截图标点 · 2026-10-12
+
+- 已修改：进程标准输入明确使用无 BOM 的 UTF-8；翻译与解释提示要求处理清晰可识别内容，容忍边缘标点；保留原文及代码、URL、数学表达式中的有意义符号。
+- 已通过：Windows 应用编译（0 警告、0 错误）、自包含安装包发布、OCR 资源 SHA256 核对。
+- 待原 Windows 设备复查：`Windows`、`windows:`、`Tencent` 的翻译与解释，及中文、缩写、代码输入。未在 Windows 设备上验证乱码已消失。
+- 安装包：`Dist/Suishouyi-1.2.2-windows-x64-Setup.exe`。

@@ -1,2 +1,2 @@
-1a6af8db04676fd930abdf58430f8d73c28d6c922c78a2d1a96442f3f89ee8e1  Suishouyi-1.2.1-windows-x64-Setup.exe
+da5f07e7d587fb24f04ed68b50c190f52b331dd31d1576244faab2ee4a93608d  Suishouyi-1.2.2-windows-x64-Setup.exe
 adc6b619a621650e1d75c0606ddc5822a60f19614f64822c45c7ee3c6e4e43af  随手译-1.2.0-macOS-universal-TEST-UNSIGNED.pkg

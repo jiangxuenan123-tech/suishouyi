@@ -4,7 +4,7 @@ public record ProcessOutput(int ExitCode,string StandardOutput,string StandardEr
 public static class ProcessRunner {
  public static async Task<ProcessOutput> RunAsync(string executable,IEnumerable<string> args,string input,string workDirectory,CancellationToken token,TimeSpan? timeout=null) {
   token.ThrowIfCancellationRequested();Directory.CreateDirectory(workDirectory);
-  var start=new ProcessStartInfo(executable) { UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=workDirectory,StandardOutputEncoding=System.Text.Encoding.UTF8,StandardErrorEncoding=System.Text.Encoding.UTF8 };
+  var start=new ProcessStartInfo(executable) { UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=workDirectory,StandardInputEncoding=new System.Text.UTF8Encoding(false),StandardOutputEncoding=System.Text.Encoding.UTF8,StandardErrorEncoding=System.Text.Encoding.UTF8 };
   foreach(var arg in args) start.ArgumentList.Add(arg);
   start.Environment["DISABLE_AUTOUPDATER"]="1";
   using var process=Process.Start(start)??throw new IOException("无法启动 CodeBuddy。");
