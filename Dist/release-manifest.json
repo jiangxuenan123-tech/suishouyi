@@ -3,15 +3,15 @@
   "application": "随手译",
   "packages": [
     {
-      "file": "Suishouyi-1.2.0-windows-x64-Setup.exe",
-      "version": "1.2.0",
+      "file": "Suishouyi-1.2.1-windows-x64-Setup.exe",
+      "version": "1.2.1",
       "platform": "Windows",
       "architecture": "x64",
       "minimumOS": "Windows 10 2004",
       "bytes": 224576385,
-      "sha256": "69e4d2221516d7fc2d75ae177c1d87a8a29dc5528f26fe019bef8ec4c7efb609",
+      "sha256": "1a6af8db04676fd930abdf58430f8d73c28d6c922c78a2d1a96442f3f89ee8e1",
       "signing": "unsigned",
-      "runtimeVerification": "Windows x64 cross build and self-contained publish verified; Windows device runtime verification pending",
+      "runtimeVerification": "Windows x64 self-contained build and OCR resource hashes verified; redesigned settings UI and DPI behavior pending Windows device verification",
       "releaseStatus": "test candidate"
     },
     {
